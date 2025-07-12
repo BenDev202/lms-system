@@ -6,11 +6,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { authClient } from '@/lib/auth-client'
 import { GithubIcon, Loader } from 'lucide-react'
-import React, { useTransition } from 'react'
+import { useRouter } from 'next/navigation';
+import React, { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 export default function LoginForm() {
+    const router = useRouter()
         const [ githubPending, startGithubTransition] = useTransition()
+        const [ emailTransition, startEmailTransition] = useTransition()
+        const [email, setEmail] = useState('')
+
 
     async function signInWithGithub() {
         startGithubTransition(async () => {
@@ -27,6 +32,25 @@ export default function LoginForm() {
                 },
             });
         });
+    }
+
+    function signInWithEmail() {
+        startEmailTransition(async () => {
+            await authClient.emailOtp.sendVerificationOtp({
+                email: email,
+                type: 'sign-in',
+                fetchOptions: {
+                    onSuccess: () => {
+                        toast.success('Email Sent');
+                        router.push(`/verify-request`;)
+                    },
+
+                    onError: function () {
+                toast.error('Error seding ');
+            }
+                }
+            })
+        }) 
     }
 
   return (
@@ -58,7 +82,7 @@ export default function LoginForm() {
                 <div className='grid gap-3'>
                     <div className='grid gap-2'>
                         <Label htmlFor='email'>Email</Label>
-                        <Input type='email' placeholder='me@email.com' />
+                        <Input value={email} onChange={(e) => setEmail(e.target.value)} type='email' placeholder='me@email.com' required />
                     </div>
                     <Button>Continue with Email</Button>
                 </div>
