@@ -1,25 +1,20 @@
+"use client"
+
 import { ModeToggle } from "@/components/ModeToggle";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/auth";
-import { redirect } from 'next/navigation';
-import { headers } from "next/headers";
+import { authClient } from "@/lib/auth-client" // import the auth client
 
-export default async function Home() {
-  "use server"
-  const session = await auth.api.getSession({
-        headers: await headers(),
-    });
 
-    if(session) {
-        return redirect("/")
-    }
+export default function Home() {
+  const { data: session } = authClient.useSession() 
+
   return (
     <div>
       <ModeToggle />
 
       {session ? <p>
-        {sessionStorage.user.name}
-      </p> : <Button>Logout</Button>}
+        {session.user.name}
+      </p> : <Button>Login</Button>}
     </div>
   );
 }
