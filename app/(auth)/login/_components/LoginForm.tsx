@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { authClient } from '@/lib/auth-client'
-import { GithubIcon, Loader } from 'lucide-react'
+import { GithubIcon, Loader, Loader2, Send } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 import React, { useState, useTransition } from 'react'
 import { toast } from 'sonner'
@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 export default function LoginForm() {
     const router = useRouter()
         const [ githubPending, startGithubTransition] = useTransition()
-        const [ emailTransition, startEmailTransition] = useTransition()
+        const [ emailPending, startEmailTransition] = useTransition()
         const [email, setEmail] = useState('')
 
 
@@ -84,7 +84,19 @@ export default function LoginForm() {
                         <Label htmlFor='email'>Email</Label>
                         <Input value={email} onChange={(e) => setEmail(e.target.value)} type='email' placeholder='me@email.com' required />
                     </div>
-                    <Button>Continue with Email</Button>
+                    <Button onClick={signInWithEmail} disabled={emailPending}>
+                        {emailPending ? (
+                            <>
+                            <Loader2 className='size-4 animate-spin'/>
+                            <span>Loading...</span>
+                            </>
+                        ): (
+                            <>
+                            <Send className='size-4'/>
+                            <span>Continue with email</span>
+                            </>
+                        )}
+                    </Button>
                 </div>
             </CardContent>
     </Card>

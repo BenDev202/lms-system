@@ -20,7 +20,7 @@ export const auth = betterAuth({
         emailOTP({
             async sendVerificationOTP({ email, otp }) {
                 // implement  sending the email to the user
-                const { data, error } = await resend.emails.send({
+                await resend.emails.send({
                     from: 'Nexus <onboarding@resend.dev>',
                     to: [email],
                     subject: 'NexusLMS Verify your email',
