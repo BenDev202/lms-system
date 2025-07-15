@@ -1,8 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { authClient } from "@/lib/auth-client";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
 
 export default function VerifyRequest() {
+    const router = useRouter();
+    const [otp, setOtp] = useState('');
+    const [emailPending, startTransition] = useTransition();
+    const params = useSearchParams();
+    const email = params.get('email');
+
+    function verifyOtp() {
+        startTransition(async () => {
+            await authClient.signIn.emailOtp({
+                email: email,
+                otp: otp,
+                fetchOptions: {
+                    onSuccess: () => {
+                        toast.success('Email Verified');
+                        router.push(`/`)
+                    },
+                    onError: () => {
+                        toast.error('Error Verifying Email/OTP');
+                    }
+                }
+            })
+        })
+    }
     return (
         <>
         <Card className="flex flex-col items-center space-y-2">
@@ -10,9 +37,9 @@ export default function VerifyRequest() {
                 <CardTitle>Please Check Your Email</CardTitle>
                 <CardDescription>We have sent a verification email to your email address. Please check your email and use OTP to verify your email.</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
                 <div>
-                <InputOTP maxLength={6} className="gap-2">
+                <InputOTP value="" maxLength={6} className="gap-2">
                     <InputOTPGroup>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
