@@ -1,10 +1,10 @@
 "use client";
 
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { authClient } from "@/lib/auth-client";
+import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -36,13 +36,13 @@ export default function VerifyRequest() {
     }
     return (
         <>
-        <Card className="flex flex-col items-center space-y-2">
+        <Card className="w-full mx-auto">
             <CardHeader className="text-center">
-                <CardTitle>Please Check Your Email</CardTitle>
+                <CardTitle className="text-center">Please Check Your Email</CardTitle>
                 <CardDescription>We have sent a verification email to your email address. Please check your email and use OTP to verify your email.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div>
+                <div className="flex flex-col items-center space-y-2">
                 <InputOTP value={otp} onChange={(value) => setOtp(value)} maxLength={6} className="gap-2">
 
                     <InputOTPGroup>
@@ -59,7 +59,16 @@ export default function VerifyRequest() {
                 <p className="text-sm text-muted-foreground">Enter 6-digits code sent to your email</p>
                 </div>
 
-                <Button onClick={verifyOtp} disabled={emailPending || !isOtpCompleted} className="w-full">Verify</Button>
+                <Button onClick={verifyOtp} disabled={emailPending || !isOtpCompleted} className="w-full">
+                {emailPending ? (
+                    <>
+                    <Loader2 className="size-4 animate-spin"/>
+                    <span>Loading...</span>
+                    </>
+                ): (
+                    "Verify"
+                )}
+                </Button>
             </CardContent>
         </Card>
         </>
