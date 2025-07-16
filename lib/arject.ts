@@ -1,10 +1,10 @@
 import arcjet, {
-detectBot,
-fixedWindow,
-protectSignup,
-sensitiveInfo,
-shield,
-slidingWindow,
+    detectBot,
+    fixedWindow,
+    protectSignup,
+    sensitiveInfo,
+    shield,
+    slidingWindow,
 } from '@arcjet/next'
 import { env } from './env';
 
